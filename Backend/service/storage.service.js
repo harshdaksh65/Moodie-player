@@ -13,6 +13,7 @@ function uploadFile(file){
         imagekit.upload({
             file:file.buffer,
             fileName:(new mongoose.Types.ObjectId()).toString(), 
+            
             folder:"cohort-audio"
         },(error,result)=>{
             if(error){

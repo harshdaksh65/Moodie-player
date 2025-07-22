@@ -1,5 +1,4 @@
 import React, { useState, useRef } from "react";
-import './MoodSongs.css';
 
 function MoodSongs({ songs }) {
   const [isPlaying, setIsPlaying] = useState(null);
@@ -41,63 +40,133 @@ function MoodSongs({ songs }) {
     }));
   };
 
+  const formatTime = (timeInSeconds) => {
+    if (!timeInSeconds || isNaN(timeInSeconds)) return "0:00";
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = Math.floor(timeInSeconds % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  const getRemainingTime = (index) => {
+    const currentTime = progress[index] || 0;
+    const totalDuration = duration[index] || 0;
+    const remaining = totalDuration - currentTime;
+    return `-${formatTime(remaining)}`;
+  };
+
+  const getProgressPercentage = (index) => {
+    const currentTime = progress[index] || 0;
+    const totalDuration = duration[index] || 0;
+    return totalDuration > 0 ? (currentTime / totalDuration) * 100 : 0;
+  };
+
   return (
-    <div>
-      <h2 className="text-2xl font-semibold mb-4">Recommended Songs</h2>
-      <ul className="list-disc pl-5">
-        {songs.map((song, index) => (
-          <div className="mb-2 bg-gray-500 rounded-lg px-4 py-2 flex flex-col" key={index}>
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-xl font-bold">{song.title}</h1>
-                <p className="text-sm">{song.artist}</p>
+    <div className=" bg-gradient-to-br from-purple-400 to-pink-300 p-4">
+      <div className="max-w-2xl mx-auto">
+        <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Recommended Songs</h2>
+        
+        <div className="space-y-4">
+          {songs.map((song, index) => (
+            <div key={index} className="bg-white rounded-3xl shadow-2xl p-6 relative overflow-hidden">
+              {/* Song Info and Controls */}
+              <div className="flex items-center justify-between ">
+                <div className="flex items-center mb-4">
+                <div className="w-16 h-16 rounded-full border-4 border-gray-300 bg-gray-500 flex items-center justify-center mr-4 shadow-lg overflow-hidden">
+                  <img 
+                    src={song.cover} 
+                    alt="Album cover" 
+                    className="w-full h-full object-contain shadow-md"
+                  />
+                </div>
+                
+                {/* Song Details */}
+                <div className="flex-1">
+                  <h2 className="text-lg font-bold text-gray-900">{song.title}</h2>
+                  <p className="text-gray-600 text-sm mb-1">{song.artist}</p>
+            
+                </div>
               </div>
-              <div className="play-pause-center">
-                <button
-                  className={`play-pause-circle ${isPlaying === index ? "playing" : ""}`}
+
+              {/* Control Buttons */}
+              <div className="flex items-center justify-center space-x-8 mb-6">
+                  <button 
                   onClick={() => handlePlayPause(index)}
+                  className="transition-all duration-200 shadow-lg hover:shadow-xl"
                 >
                   {isPlaying === index ? (
-                    <svg width="32" height="32" viewBox="0 0 32 32">
-                      <circle cx="16" cy="16" r="16" fill="#22c55e"/>
-                      <rect x="10" y="9" width="3" height="14" rx="1.5" fill="#fff"/>
-                      <rect x="19" y="9" width="3" height="14" rx="1.5" fill="#fff"/>
-                    </svg>
+                    <img width="35" height="50" src="https://img.icons8.com/ios/50/circled-pause.png" alt="circled-pause"/>
+                   
                   ) : (
-                    <svg width="32" height="32" viewBox="0 0 32 32">
-                      <circle cx="16" cy="16" r="16" fill="#3b82f6"/>
-                      <polygon points="12,9 24,16 12,23" fill="#fff"/>
-                    </svg>
+                    <img width="35" height="50" src="https://img.icons8.com/ios/50/circled-play.png" alt="circled-play"/>
                   )}
                 </button>
-                <audio
-                  ref={el => audioRefs.current[index] = el}
-                  src={song.audio}
-                  onTimeUpdate={() => handleTimeUpdate(index)}
-                  onLoadedMetadata={() => handleTimeUpdate(index)}
-                  onEnded={() => setIsPlaying(null)}
-                  style={{ display: 'none' }}
-                />
+                
               </div>
-            </div>
-            <div className="slider-row">
-              <span className="slider-time-right">
-                {`${Math.floor((progress[index] || 0) / 60)}:${String(Math.floor(progress[index] || 0) % 60).padStart(2, '0')} / ${Math.floor((duration[index] || 0) / 60)}:${String(Math.floor(duration[index] || 0) % 60).padStart(2, '0')}`}
-              </span>
-              <input
-                type="range"
-                min={0}
-                max={duration[index] || 0}
-                step={0.01}
-                value={progress[index] || 0}
-                onChange={e => handleSliderChange(index, parseFloat(e.target.value))}
-                className="song-slider"
-                disabled={!duration[index]}
+              </div>
+              
+
+              {/* Animated Progress Slider */}
+              <div className={`transition-all duration-500 ease-in-out overflow-hidden ${
+                isPlaying === index 
+                  ? 'max-h-20 opacity-100 transform translate-y-0' 
+                  : 'max-h-0 opacity-0 transform translate-y-4'
+              }`}>
+                <div className="space-y-2">
+                  {/* Progress Bar */}
+                  <div className="relative">
+                    <div className="w-full h-1 bg-gray-200 rounded-full">
+                      <div 
+                        className="h-1 bg-gray-800 rounded-full transition-all duration-300 relative"
+                        style={{ width: `${getProgressPercentage(index)}%` }}
+                      >
+                      </div>
+                    </div>
+                    {/* Invisible range input for interaction */}
+                    <input
+                      type="range"
+                      min={0}
+                      max={duration[index] || 0}
+                      step={0.01}
+                      value={progress[index] || 0}
+                      onChange={e => handleSliderChange(index, parseFloat(e.target.value))}
+                      className="absolute top-0 left-0 w-full h-1 opacity-0 cursor-pointer"
+                      disabled={!duration[index]}
+                    />
+                  </div>
+                  
+                  {/* Time Display */}
+                  <div className="flex justify-between text-xs text-gray-500">
+                    <span>{formatTime(progress[index])}</span>
+                    <span>{getRemainingTime(index)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Static time display when not playing */}
+              <div className={`transition-all duration-500 ease-in-out ${
+                isPlaying !== index 
+                  ? 'opacity-100 transform translate-y-0' 
+                  : 'opacity-0 transform -translate-y-4 absolute'
+              }`}>
+                <div className="flex justify-between text-xs text-gray-500">
+                  <span>0:00</span>
+                  <span>-{formatTime(duration[index])}</span>
+                </div>
+              </div>
+
+              {/* Hidden Audio Element */}
+              <audio
+                ref={el => audioRefs.current[index] = el}
+                src={song.audio}
+                onTimeUpdate={() => handleTimeUpdate(index)}
+                onLoadedMetadata={() => handleTimeUpdate(index)}
+                onEnded={() => setIsPlaying(null)}
+                style={{ display: 'none' }}
               />
             </div>
-          </div>
-        ))}
-      </ul>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
