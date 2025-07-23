@@ -61,11 +61,9 @@ function MoodSongs({ songs }) {
     return totalDuration > 0 ? (currentTime / totalDuration) * 100 : 0;
   };
 
-  const handleAnimationComplete = () => {
-    console.log("Animation completed!");
-  };
+  
 
-  return (
+  return songs ? (
     <div className=" backdrop-blur-lg bg-white/10 rounded-2xl p-6 border border-white/20 shadow-xl">
       <div className="max-w-2xl mx-auto">
         <BlurText
@@ -73,14 +71,14 @@ function MoodSongs({ songs }) {
           delay={150}
           animateBy="words"
           direction="top"
-          onAnimationComplete={handleAnimationComplete}
+          
           className="text-4xl text-white text-center font-semibold mb-8"
         />
         <div className="space-y-4">
           {songs.map((song, index) => (
             <div
               key={index}
-              className="backdrop-blur-lg bg-white/5 rounded-2xl p-4 sm:p-6 border border-white/20 shadow-xl">
+              className="backdrop-blur-lg bg-white/3 rounded-2xl p-4 sm:p-6 border border-white/20 shadow-xl">
               {/* Song Info and Controls */}
               <div className="flex items-center justify-between ">
                 <div className="flex items-center mb-4">
@@ -191,6 +189,9 @@ function MoodSongs({ songs }) {
           ))}
         </div>
       </div>
+    </div>
+  ) : (
+    <div className="">
     </div>
   );
 }

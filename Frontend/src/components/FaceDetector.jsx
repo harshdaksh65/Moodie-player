@@ -54,13 +54,13 @@ const FaceDetector = ({ setSongs }) => {
           _expression = expression;
         }
       }
-      console.log("Detected expression: ", _expression);
+      // console.log("Detected expression: ", _expression);
       setExpression(_expression);
 
       axios
         .get(`http://localhost:3000/songs?mood=${_expression}`)
         .then((response) => {
-          console.log(response.data);
+          // console.log(response.data);
           setSongs(response.data.songs);
         });
     }, 2000);
@@ -104,7 +104,7 @@ const FaceDetector = ({ setSongs }) => {
                 ? false
                 : false
             }
-            className={`relative px-6 py-3 sm:px-8 sm:py-4 rounded-xl font-bold text-base sm:text-lg transition-all duration-300 mb-4 block lg:hidden ${
+            className={`relative px-6 py-3 sm:px-8 sm:py-4 rounded-xl font-bold text-base sm:text-lg transition-all duration-300 my-6 block lg:hidden ${
               expression === "Detecting..."
                 ? "bg-purple-500/30 text-purple-300 cursor-not-allowed"
                 : "bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105"
