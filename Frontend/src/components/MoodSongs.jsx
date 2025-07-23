@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import BlurText from "./BlurText";
 
 function MoodSongs({ songs }) {
   const [isPlaying, setIsPlaying] = useState(null);
@@ -21,22 +22,22 @@ function MoodSongs({ songs }) {
 
   const handleTimeUpdate = (index) => {
     const audio = audioRefs.current[index];
-    setProgress(prev => ({
+    setProgress((prev) => ({
       ...prev,
-      [index]: audio.currentTime
+      [index]: audio.currentTime,
     }));
-    setDuration(prev => ({
+    setDuration((prev) => ({
       ...prev,
-      [index]: audio.duration
+      [index]: audio.duration,
     }));
   };
 
   const handleSliderChange = (index, value) => {
     const audio = audioRefs.current[index];
     audio.currentTime = value;
-    setProgress(prev => ({
+    setProgress((prev) => ({
       ...prev,
-      [index]: value
+      [index]: value,
     }));
   };
 
@@ -44,7 +45,7 @@ function MoodSongs({ songs }) {
     if (!timeInSeconds || isNaN(timeInSeconds)) return "0:00";
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = Math.floor(timeInSeconds % 60);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
   const getRemainingTime = (index) => {
@@ -60,66 +61,86 @@ function MoodSongs({ songs }) {
     return totalDuration > 0 ? (currentTime / totalDuration) * 100 : 0;
   };
 
+  const handleAnimationComplete = () => {
+    console.log("Animation completed!");
+  };
+
   return (
-    <div className=" bg-gradient-to-br from-purple-400 to-pink-300 p-4">
+    <div className=" backdrop-blur-lg bg-white/10 rounded-2xl p-6 border border-white/20 shadow-xl">
       <div className="max-w-2xl mx-auto">
-        <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Recommended Songs</h2>
-        
+        <BlurText
+          text="Recommended Songs"
+          delay={150}
+          animateBy="words"
+          direction="top"
+          onAnimationComplete={handleAnimationComplete}
+          className="text-4xl text-white text-center font-semibold mb-8"
+        />
         <div className="space-y-4">
           {songs.map((song, index) => (
-            <div key={index} className="bg-white rounded-3xl shadow-2xl p-6 relative overflow-hidden">
+            <div
+              key={index}
+              className="backdrop-blur-lg bg-white/5 rounded-2xl p-4 sm:p-6 border border-white/20 shadow-xl">
               {/* Song Info and Controls */}
               <div className="flex items-center justify-between ">
                 <div className="flex items-center mb-4">
-                <div className="w-16 h-16 rounded-full border-4 border-gray-300 bg-gray-500 flex items-center justify-center mr-4 shadow-lg overflow-hidden">
-                  <img 
-                    src={song.cover} 
-                    alt="Album cover" 
-                    className="w-full h-full object-contain shadow-md"
-                  />
-                </div>
-                
-                {/* Song Details */}
-                <div className="flex-1">
-                  <h2 className="text-lg font-bold text-gray-900">{song.title}</h2>
-                  <p className="text-gray-600 text-sm mb-1">{song.artist}</p>
-            
-                </div>
-              </div>
+                  <div className="w-16 h-16 rounded-full border-4 border-gray-300 bg-gray-500 flex items-center justify-center mr-4 shadow-lg overflow-hidden">
+                    <img
+                      src={song.cover}
+                      alt="Album cover"
+                      className="w-full h-full object-contain shadow-md"
+                    />
+                  </div>
 
-              {/* Control Buttons */}
-              <div className="flex items-center justify-center space-x-8 mb-6">
-                  <button 
-                  onClick={() => handlePlayPause(index)}
-                  className="transition-all duration-200 shadow-lg hover:shadow-xl"
-                >
-                  {isPlaying === index ? (
-                    <img width="35" height="50" src="https://img.icons8.com/ios/50/circled-pause.png" alt="circled-pause"/>
-                   
-                  ) : (
-                    <img width="35" height="50" src="https://img.icons8.com/ios/50/circled-play.png" alt="circled-play"/>
-                  )}
-                </button>
-                
+                  {/* Song Details */}
+                  <div className="flex-1">
+                    <h2 className="text-lg font-bold text-gray-900">
+                      {song.title}
+                    </h2>
+                    <p className="text-gray-900 text-sm mb-1">{song.artist}</p>
+                  </div>
+                </div>
+
+                {/* Control Buttons */}
+                <div className="flex items-center justify-center space-x-8 mb-6">
+                  <button
+                    onClick={() => handlePlayPause(index)}
+                    className="transition-all duration-200 shadow-lg hover:shadow-xl">
+                    {isPlaying === index ? (
+                      <img
+                        width="35"
+                        height="50"
+                        src="https://img.icons8.com/ios/50/circled-pause.png"
+                        alt="circled-pause"
+                      />
+                    ) : (
+                      <img
+                        width="35"
+                        height="50"
+                        src="https://img.icons8.com/ios/50/circled-play.png"
+                        alt="circled-play"
+                      />
+                    )}
+                  </button>
+                </div>
               </div>
-              </div>
-              
 
               {/* Animated Progress Slider */}
-              <div className={`transition-all duration-500 ease-in-out overflow-hidden ${
-                isPlaying === index 
-                  ? 'max-h-20 opacity-100 transform translate-y-0' 
-                  : 'max-h-0 opacity-0 transform translate-y-4'
-              }`}>
+              <div
+                className={`transition-all duration-500 ease-in-out overflow-hidden ${
+                  isPlaying === index
+                    ? "max-h-20 opacity-100 transform translate-y-0"
+                    : "max-h-0 opacity-0 transform translate-y-4"
+                }`}>
                 <div className="space-y-2">
                   {/* Progress Bar */}
                   <div className="relative">
                     <div className="w-full h-1 bg-gray-200 rounded-full">
-                      <div 
+                      <div
                         className="h-1 bg-gray-800 rounded-full transition-all duration-300 relative"
-                        style={{ width: `${getProgressPercentage(index)}%` }}
-                      >
-                      </div>
+                        style={{
+                          width: `${getProgressPercentage(index)}%`,
+                        }}></div>
                     </div>
                     {/* Invisible range input for interaction */}
                     <input
@@ -128,14 +149,16 @@ function MoodSongs({ songs }) {
                       max={duration[index] || 0}
                       step={0.01}
                       value={progress[index] || 0}
-                      onChange={e => handleSliderChange(index, parseFloat(e.target.value))}
+                      onChange={(e) =>
+                        handleSliderChange(index, parseFloat(e.target.value))
+                      }
                       className="absolute top-0 left-0 w-full h-1 opacity-0 cursor-pointer"
                       disabled={!duration[index]}
                     />
                   </div>
-                  
+
                   {/* Time Display */}
-                  <div className="flex justify-between text-xs text-gray-500">
+                  <div className="flex justify-between text-xs text-gray-900">
                     <span>{formatTime(progress[index])}</span>
                     <span>{getRemainingTime(index)}</span>
                   </div>
@@ -143,12 +166,13 @@ function MoodSongs({ songs }) {
               </div>
 
               {/* Static time display when not playing */}
-              <div className={`transition-all duration-500 ease-in-out ${
-                isPlaying !== index 
-                  ? 'opacity-100 transform translate-y-0' 
-                  : 'opacity-0 transform -translate-y-4 absolute'
-              }`}>
-                <div className="flex justify-between text-xs text-gray-500">
+              <div
+                className={`transition-all duration-500 ease-in-out ${
+                  isPlaying !== index
+                    ? "opacity-100 transform translate-y-0"
+                    : "opacity-0 transform -translate-y-4 absolute"
+                }`}>
+                <div className="flex justify-between text-xs text-gray-900">
                   <span>0:00</span>
                   <span>-{formatTime(duration[index])}</span>
                 </div>
@@ -156,12 +180,12 @@ function MoodSongs({ songs }) {
 
               {/* Hidden Audio Element */}
               <audio
-                ref={el => audioRefs.current[index] = el}
+                ref={(el) => (audioRefs.current[index] = el)}
                 src={song.audio}
                 onTimeUpdate={() => handleTimeUpdate(index)}
                 onLoadedMetadata={() => handleTimeUpdate(index)}
                 onEnded={() => setIsPlaying(null)}
-                style={{ display: 'none' }}
+                style={{ display: "none" }}
               />
             </div>
           ))}
