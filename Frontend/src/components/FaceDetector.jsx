@@ -1,7 +1,9 @@
 import React, { useRef, useEffect, useState } from "react";
 import * as faceapi from "face-api.js";
 import { Brain, Sparkles } from "lucide-react";
-import axios from "axios";
+import axios from "../api/axiosconfig"; // Adjust the import path as necessary
+
+
 
 const FaceDetector = ({ setSongs }) => {
   const videoRef = useRef();
@@ -58,7 +60,7 @@ const FaceDetector = ({ setSongs }) => {
       setExpression(_expression);
 
       axios
-        .get(`http://localhost:3000/songs?mood=${_expression}`)
+        .get(`/songs?mood=${_expression}`)
         .then((response) => {
           // console.log(response.data);
           setSongs(response.data.songs);
@@ -68,6 +70,7 @@ const FaceDetector = ({ setSongs }) => {
 
   useEffect(() => {
     loadModels().then(startVideo);
+    // console.log("API base URL:", import.meta.env.VITE_API_URL);
   }, []);
 
   return (
