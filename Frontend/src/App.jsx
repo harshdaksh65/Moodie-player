@@ -1,18 +1,18 @@
-import React, { useState } from 'react'
-import FaceDetector from './components/FaceDetector'
-import MoodSongs from './components/MoodSongs'
-import { Sparkles } from 'lucide-react';
-import Orb from './components/Orb';
+import React, { useState } from "react";
+import FaceDetector from "./components/FaceDetector";
+import MoodSongs from "./components/MoodSongs";
+import { Sparkles } from "lucide-react";
+import Orb from "./components/Orb";
 
 function App() {
   const [songs, setSongs] = useState([]);
   const [moodDetected, setMoodDetected] = useState(false);
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden">
+    <div className="flex flex-col min-h-screen overflow-x-hidden relative">
       {/* Aurora as full-page background */}
       <div className="fixed  bg-[#060010] inset-0 -z-10 w-full h-full">
-        <div style={{ width: '100%', height: '600px', position: 'relative' }}>
+        <div style={{ width: "100%", height: "600px", position: "relative" }}>
           <Orb
             hoverIntensity={0.5}
             rotateOnHover={true}
@@ -21,15 +21,14 @@ function App() {
           />
         </div>
       </div>
-      <div className='flex flex-col gap-4 w-[90%] mx-auto mb-6 pt-4'>
+      <div className="flex flex-col gap-4 w-[90%] mx-auto pt-4 flex-grow">
         <div className="flex items-center justify-center mb-2 ">
           <h1
             className="text-3xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-400 bg-clip-text text-transparent text-center drop-shadow-lg relative transition-colors duration-1000 animate-gradient-x"
             style={{
-              backgroundSize: '200% 200%',
-              animation: 'gradient-move 3s ease-in-out infinite',
-            }}
-          >
+              backgroundSize: "200% 200%",
+              animation: "gradient-move 3s ease-in-out infinite",
+            }}>
             Moodify
             <span className="inline-block animate-bounce">
               <Sparkles size={24} className="text-purple-400 ml-2" />
@@ -54,8 +53,15 @@ function App() {
           }
         `}
       </style>
+
+      <div className="bg-[#060010] py-2 flex justify-center items-center">
+        <p className="text-sm text-white/70 text-center">
+          Made with ❤️ by Harsh Kumar
+        </p>
+      </div>
+      
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
