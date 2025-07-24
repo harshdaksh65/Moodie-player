@@ -1,5 +1,6 @@
 var ImageKit = require("imagekit");
 var mongoose = require('mongoose');
+require('dotenv').config();
 
 var imagekit = new ImageKit({
     publicKey : process.env.IMAGEKIT_PUBLIC_KEY,
